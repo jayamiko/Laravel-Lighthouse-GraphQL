@@ -4,13 +4,23 @@ type User {
     email: String!
 }
 
+type Post {
+    id: ID!
+    title: String!
+    content: String!
+    id_user: ID!
+    created_at: DateTime
+    updated_at: DateTime
+}
+
 type AuthPayload {
     token: String!
     user: User!
 }
 
 type Query {
-    me: User! @auth(resolver: "App\\GraphQL\\Queries\\MeQuery")
+    me: User @auth
+    posts: [Post!]! @field(resolver: "App\\GraphQL\\Queries\\PostsQuery")
 }
 
 type Mutation {
@@ -18,4 +28,8 @@ type Mutation {
         @field(resolver: "App\\GraphQL\\Mutations\\Register")
     login(email: String!, password: String!): AuthPayload!
         @field(resolver: "App\\GraphQL\\Mutations\\Login")
+    createPost(title: String!, content: String!): String!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreatePostMutation")
+    updatePost(id: ID!, title: String!, content: String!): String!
+        @field(resolver: "App\\GraphQL\\Mutations\\UpdatePostMutation")
 }
