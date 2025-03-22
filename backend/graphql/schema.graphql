@@ -1,0 +1,21 @@
+type User {
+    id: ID!
+    name: String!
+    email: String!
+}
+
+type AuthPayload {
+    token: String!
+    user: User!
+}
+
+type Query {
+    me: User! @auth(resolver: "App\\GraphQL\\Queries\\MeQuery")
+}
+
+type Mutation {
+    register(name: String!, email: String!, password: String!): User
+        @field(resolver: "App\\GraphQL\\Mutations\\Register")
+    login(email: String!, password: String!): AuthPayload!
+        @field(resolver: "App\\GraphQL\\Mutations\\Login")
+}
