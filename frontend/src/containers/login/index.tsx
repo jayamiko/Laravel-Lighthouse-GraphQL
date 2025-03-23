@@ -1,20 +1,34 @@
 "use client";
 
-import { login } from "@/libs/api/authCollection";
+import { getAuthToken, login } from "@/libs/api/authCollection";
 import { LoginRequest } from "@/types/AuthType";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 function LoginPage() {
+  const router = useRouter();
+
   const [form, setForm] = useState<LoginRequest>({ email: "", password: "" });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    const authentication = async () => {
+      const res = await getAuthToken();
+
+      if (res.success) {
+        router.push("/posts");
+      }
+    };
+
+    authentication();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await login(form);
-    console.log("GraphQL Response: ", res);
+    await login(form);
   };
 
   return (

@@ -1,20 +1,45 @@
 "use client";
 
 import { PostData } from "@/types/PostType";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Input } from "@/components/inputs/Input";
 import { Button } from "@/components/buttons/Button";
 import { PostCard } from "@/components/cards/PostCard";
+import { getAuthToken } from "@/libs/api/authCollection";
+import { useRouter } from "next/navigation";
+import { User } from "@/types/UserType";
 
 interface PostsPageProps {
   data: PostData[];
 }
 
 export default function PostsPage({ data }: PostsPageProps) {
-  const LIMIT_PAGE = 6;
+  const router = useRouter();
+
+  const INITIAL_PAGE = 1;
+  const LIMIT_ITEM = 6;
+
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(INITIAL_PAGE);
+
+  const [authUser, setAuthUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const authentication = async () => {
+      const res = await getAuthToken();
+
+      if (res.success) {
+        setAuthUser(res.data);
+      } else {
+        router.push("/login");
+      }
+    };
+
+    authentication();
+  }, []);
+
+  console.log("auth user: ", authUser);
 
   const filteredPosts = useMemo(() => {
     return data?.filter((post) =>
@@ -23,11 +48,11 @@ export default function PostsPage({ data }: PostsPageProps) {
   }, [search, data]);
 
   const paginatedPosts = useMemo(() => {
-    const start = (page - 1) * LIMIT_PAGE;
-    return filteredPosts?.slice(start, start + LIMIT_PAGE);
+    const start = (page - 1) * LIMIT_ITEM;
+    return filteredPosts?.slice(start, start + LIMIT_ITEM);
   }, [page, filteredPosts]);
 
-  const totalPages = Math.ceil(filteredPosts?.length / LIMIT_PAGE);
+  const totalPages = Math.ceil(filteredPosts?.length / LIMIT_ITEM);
 
   return (
     <main className="container mx-auto p-4 select-none">
