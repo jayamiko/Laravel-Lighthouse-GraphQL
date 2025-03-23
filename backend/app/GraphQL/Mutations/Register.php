@@ -27,6 +27,6 @@ class Register
         $user->password = Hash::make($args['password']);
         $user->save();
 
-        return $user;
+        return "Create user successfully";
     }
 }

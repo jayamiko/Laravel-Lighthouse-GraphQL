@@ -1,4 +1,5 @@
 import LoginPage from "@/containers/login";
+import { login } from "@/libs/api/authCollection";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

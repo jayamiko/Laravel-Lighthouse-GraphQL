@@ -16,6 +16,7 @@ export async function fetchGraphQL({ query, variables }: GraphqlProps) {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
         query,
         variables,
