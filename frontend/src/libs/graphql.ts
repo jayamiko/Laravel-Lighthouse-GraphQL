@@ -6,6 +6,15 @@ interface GraphqlProps {
 export async function fetchGraphQL({ query, variables }: GraphqlProps) {
   //   const env = await getEnvironment();
 
+  console.log("query: ", query);
+
+  console.log(
+    "body: ",
+    JSON.stringify({
+      query,
+      variables,
+    })
+  );
   try {
     const url = `http://localhost:8000/graphql`;
     const res = await fetch(url, {

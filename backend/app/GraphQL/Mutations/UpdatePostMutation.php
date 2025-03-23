@@ -9,8 +9,6 @@ class UpdatePostMutation
 {
     public function __invoke($root, array $args)
     {
-        Log::info('UpdatePost called', ['args' => $args]);
-
         $post = Post::findOrFail($args['id']);
         $currentUserId = auth()->id();
 

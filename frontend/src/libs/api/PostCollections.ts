@@ -38,11 +38,7 @@ export async function getPostById({ id }: PostByIdProps) {
   const res = await fetchGraphQL({
     query: queryById,
     variables: {
-      filters: {
-        id: {
-          eq: id,
-        },
-      },
+      id: id,
     },
   });
   return res;

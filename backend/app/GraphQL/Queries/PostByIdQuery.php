@@ -8,6 +8,6 @@ class PostByIdQuery
 {
     public function __invoke($_, array $args)
     {
-        return Post::find($args['id']);
+        return Post::with('user')->find($args['id']);
     }
 }
