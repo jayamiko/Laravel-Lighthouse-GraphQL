@@ -5,7 +5,7 @@ import { PostData, PostRequest } from "@/types/PostType";
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/buttons/Button";
 import PostForm from "@/components/forms/PostForm";
-import { updatePost } from "@/libs/api/PostCollections";
+import { deletePost, updatePost } from "@/libs/api/PostCollections";
 import AlertNotification from "@/components/labels/AlertNotification";
 import { useRouter } from "next/navigation";
 import { getAuthToken } from "@/libs/api/authCollection";
@@ -58,12 +58,10 @@ export default function PostDetailPage({ data }: PostDetailProps) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const response = await updatePost(postID, form);
-
-    console.log(response);
 
     if (response.success) {
       setMessage({ type: "success", text: response.message });
@@ -77,6 +75,27 @@ export default function PostDetailPage({ data }: PostDetailProps) {
       setMessage({
         type: "error",
         text: response.message || "Failed to edit post. Please try again.",
+      });
+      setShowEditModal(false);
+
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
+    }
+  };
+
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const response = await deletePost(postID);
+
+    if (response.success) {
+      setShowDeleteModal(false);
+      router.push("/posts");
+    } else {
+      setMessage({
+        type: "error",
+        text: response.message || "Failed to delete post. Please try again.",
       });
       setShowEditModal(false);
 
@@ -145,7 +164,7 @@ export default function PostDetailPage({ data }: PostDetailProps) {
               type="edit"
               form={form}
               onChange={handleChange}
-              onSubmit={handleSubmit}
+              onSubmit={handleUpdate}
               handleCancel={() => setShowEditModal(false)}
             />
           </div>
@@ -156,7 +175,7 @@ export default function PostDetailPage({ data }: PostDetailProps) {
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm space-y-4">
-            <h2 className="text-lg font-semibold text-center">
+            <h2 className="text-gray-700 font-medium text-center">
               Are you sure you want to delete this post?
             </h2>
             <div className="flex justify-center gap-4">
@@ -166,12 +185,7 @@ export default function PostDetailPage({ data }: PostDetailProps) {
               >
                 Cancel
               </Button>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  /* Delete logic here */
-                }}
-              >
+              <Button variant="destructive" onClick={handleDelete}>
                 Yes, Delete
               </Button>
             </div>

@@ -95,9 +95,28 @@ export async function updatePost(id: string, req: PostRequest) {
       },
     });
 
-    console.log("RES: ", res);
-
     return { success: true, message: res?.data?.updatePost };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}
+
+const deletePostQuery = `
+    mutation ($id: ID!) {
+        deletePost(id: $id)
+    }
+`;
+
+export async function deletePost(id: string) {
+  try {
+    const res = await fetchGraphQL({
+      query: deletePostQuery,
+      variables: {
+        id,
+      },
+    });
+
+    return { success: true, message: res?.data?.deletePost };
   } catch (err: any) {
     return { success: false, message: err.message };
   }
