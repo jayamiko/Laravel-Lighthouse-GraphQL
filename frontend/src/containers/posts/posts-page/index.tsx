@@ -17,17 +17,17 @@ export default function PostsPage({ data }: PostsPageProps) {
   const [page, setPage] = useState(1);
 
   const filteredPosts = useMemo(() => {
-    return data.filter((post) =>
+    return data?.filter((post) =>
       post.title.toLowerCase().includes(search.toLowerCase())
     );
   }, [search, data]);
 
   const paginatedPosts = useMemo(() => {
     const start = (page - 1) * LIMIT_PAGE;
-    return filteredPosts.slice(start, start + LIMIT_PAGE);
+    return filteredPosts?.slice(start, start + LIMIT_PAGE);
   }, [page, filteredPosts]);
 
-  const totalPages = Math.ceil(filteredPosts.length / LIMIT_PAGE);
+  const totalPages = Math.ceil(filteredPosts?.length / LIMIT_PAGE);
 
   return (
     <main className="container mx-auto p-4 select-none">
@@ -53,8 +53,8 @@ export default function PostsPage({ data }: PostsPageProps) {
 
       {/* Posts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {paginatedPosts.length > 0 ? (
-          paginatedPosts.map((post, index) => (
+        {paginatedPosts?.length > 0 ? (
+          paginatedPosts?.map((post, index) => (
             <PostCard key={index} data={post} />
           ))
         ) : (

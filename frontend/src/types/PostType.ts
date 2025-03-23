@@ -1,6 +1,9 @@
+import { User } from "./UserType";
+
 export interface PostData {
   id: string;
   title: string;
   content: string;
-  id_user: string;
+  user: User;
+  created_at: string;
 }

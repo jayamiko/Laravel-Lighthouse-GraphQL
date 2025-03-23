@@ -6,7 +6,10 @@ export const query = `
         id
         title
         content
-        id_user
+        user {
+          name
+        }
+        created_at
       }
     }
 `;
@@ -29,7 +32,10 @@ const queryById = `
         id
         title
         content
-        id_user
+        user {
+          id
+          name
+        }
       }
     }
 `;

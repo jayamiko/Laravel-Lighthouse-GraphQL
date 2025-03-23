@@ -4,11 +4,17 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\Post;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\AuthenticationException;
 
 class UpdatePostMutation
 {
     public function __invoke($root, array $args)
     {
+        if (!Auth::guard('sanctum')->check()) {
+            throw new AuthenticationException('Unauthenticated');
+        }
+
         $post = Post::findOrFail($args['id']);
         $currentUserId = auth()->id();
 
