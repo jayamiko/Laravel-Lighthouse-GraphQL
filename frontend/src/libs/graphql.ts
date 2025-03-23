@@ -1,5 +1,5 @@
 interface GraphqlProps {
-  query: any;
+  query: string;
   variables: any;
 }
 

@@ -5,6 +5,7 @@ import React, { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Input } from "@/components/inputs/Input";
 import { Button } from "@/components/buttons/Button";
+import { PostCard } from "@/components/cards/PostCard";
 
 interface PostsPageProps {
   data: PostData[];
@@ -30,7 +31,7 @@ export default function PostsPage({ data }: PostsPageProps) {
 
   return (
     <main className="container mx-auto p-4 select-none">
-      <h1 className="text-black text-3xl font-bold mb-6 text-center">
+      <h1 className="text-gray-500 text-3xl font-bold mb-6 text-center">
         Welcome to Blog Website
       </h1>
 
@@ -53,16 +54,8 @@ export default function PostsPage({ data }: PostsPageProps) {
       {/* Posts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {paginatedPosts.length > 0 ? (
-          paginatedPosts.map((post) => (
-            <div
-              key={post.id}
-              className="text-gray-600 border rounded-xl p-4 shadow-sm hover:shadow-md transition-all"
-            >
-              <h2 className="text-xl font-semibold mb-2 truncate">
-                {post.title}
-              </h2>
-              <p className="text-sm line-clamp-3">{post.content}</p>
-            </div>
+          paginatedPosts.map((post, index) => (
+            <PostCard key={index} data={post} />
           ))
         ) : (
           <p className="col-span-full text-center text-gray-500">

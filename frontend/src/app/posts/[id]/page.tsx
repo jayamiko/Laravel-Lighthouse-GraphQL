@@ -1,23 +1,16 @@
 import PostDetailPage from "@/containers/posts/posts-detail-page";
+import { getPost, getPostById } from "@/libs/api/PostCollections";
 
 type Props = {
   params: { id: string };
 };
 
 export default async function Page({ params }: Props) {
-  const postID = params.id;
+  console.log("ID: ", params.id);
+  const response = await getPostById({ id: params.id });
 
-  //   const postsData = await getPost({
-  //     variables: {
-  //       filters: {
-  //         slug: {
-  //           eq: slug,
-  //         },
-  //       },
-  //     },
-  //   });
-
-  //   const newsDetail = postsData.posts.data[0];
+  console.log("RESPONSE DETAIL: ", response);
+  // const newsDetail = postsData.posts.data[0];
 
   return (
     <PostDetailPage

@@ -1,9 +1,5 @@
 import { fetchGraphQL } from "../graphql";
 
-interface PostProps {
-  variables?: any;
-}
-
 export const query = `
     query {
       posts {
@@ -15,10 +11,39 @@ export const query = `
     }
 `;
 
-export async function getPost(params?: PostProps) {
+export async function getPost() {
   const res = await fetchGraphQL({
     query: query,
-    variables: params?.variables,
+    variables: {},
+  });
+  return res;
+}
+
+interface PostByIdProps {
+  id: string;
+}
+
+const queryById = `
+    query ($id: ID!) {
+      post(id: $id) {
+        id
+        title
+        content
+        id_user
+      }
+    }
+`;
+
+export async function getPostById({ id }: PostByIdProps) {
+  const res = await fetchGraphQL({
+    query: queryById,
+    variables: {
+      filters: {
+        id: {
+          eq: id,
+        },
+      },
+    },
   });
   return res;
 }
