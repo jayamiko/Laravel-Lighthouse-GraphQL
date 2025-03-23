@@ -7,13 +7,14 @@ import { PostRequest } from "@/types/PostType";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { AlertCircle, ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/buttons/Button";
+import AlertNotification from "@/components/labels/AlertNotification";
 
 export default function PostsCreatePage() {
   const router = useRouter();
 
-  const initialForm = {
+  const initialForm: PostRequest = {
     title: "",
     content: "",
   };
@@ -38,11 +39,19 @@ export default function PostsCreatePage() {
     if (response.success) {
       setMessage({ type: "success", text: response.message });
       setForm(initialForm);
+
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     } else {
       setMessage({
         type: "error",
         text: response.message || "Failed to create post. Please try again.",
       });
+
+      setTimeout(() => {
+        setMessage(null);
+      }, 3000);
     }
   };
 
@@ -65,23 +74,7 @@ export default function PostsCreatePage() {
               </h2>
             </div>
 
-            {/* Notif Message */}
-            {message && (
-              <div
-                className={`flex items-center gap-2 p-3 rounded-md ${
-                  message.type === "success"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                }`}
-              >
-                {message.type === "success" ? (
-                  <CheckCircle className="w-4 h-4" />
-                ) : (
-                  <AlertCircle className="w-4 h-4" />
-                )}
-                <p className="text-sm">{message.text}</p>
-              </div>
-            )}
+            {message && <AlertNotification message={message} />}
 
             {/* Form */}
             <PostForm

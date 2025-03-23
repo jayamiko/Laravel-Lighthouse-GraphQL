@@ -77,3 +77,28 @@ export async function createPost(req: PostRequest) {
     return { success: false, message: err.message };
   }
 }
+
+const updatePostQuery = `
+    mutation ($id: ID!, $title: String!, $content: String!) {
+        updatePost(id: $id, title: $title, content: $content)
+    }
+`;
+
+export async function updatePost(id: string, req: PostRequest) {
+  try {
+    const res = await fetchGraphQL({
+      query: updatePostQuery,
+      variables: {
+        id,
+        title: req.title,
+        content: req.content,
+      },
+    });
+
+    console.log("RES: ", res);
+
+    return { success: true, message: res?.data?.updatePost };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}
