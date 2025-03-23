@@ -2,13 +2,14 @@
 
 import { PostData } from "@/types/PostType";
 import React, { useState, useMemo, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Search } from "lucide-react";
 import { Input } from "@/components/inputs/Input";
 import { Button } from "@/components/buttons/Button";
 import { PostCard } from "@/components/cards/PostCard";
 import { getAuthToken } from "@/libs/api/authCollection";
 import { useRouter } from "next/navigation";
 import { User } from "@/types/UserType";
+import Link from "next/link";
 
 interface PostsPageProps {
   data: PostData[];
@@ -39,8 +40,6 @@ export default function PostsPage({ data }: PostsPageProps) {
     authentication();
   }, []);
 
-  console.log("auth user: ", authUser);
-
   const filteredPosts = useMemo(() => {
     return data?.filter((post) =>
       post.title.toLowerCase().includes(search.toLowerCase())
@@ -60,6 +59,16 @@ export default function PostsPage({ data }: PostsPageProps) {
         Welcome to Blog Website
       </h1>
 
+      {/* User Info */}
+      {authUser && (
+        <div className="mb-6 text-center">
+          <p className="text-gray-700 font-medium">
+            Logged in as: {authUser.name}
+          </p>
+          <p className="text-gray-500 text-sm">{authUser.email}</p>
+        </div>
+      )}
+
       {/* Search Bar */}
       <div className="flex items-center gap-2 mb-6 justify-center">
         <Input
@@ -71,7 +80,7 @@ export default function PostsPage({ data }: PostsPageProps) {
           }}
           className="w-1/3"
         />
-        <Button variant="outline">
+        <Button variant="default">
           <Search className="h-4 w-4" />
         </Button>
       </div>
@@ -111,6 +120,15 @@ export default function PostsPage({ data }: PostsPageProps) {
           </Button>
         </div>
       )}
+
+      <Link href="/posts/create" className="fixed bottom-8 right-8">
+        <Button
+          variant="default"
+          className="rounded-full w-14 h-14 shadow-lg hover:scale-105 transition-transform"
+        >
+          <Plus className="h-6 w-6" />
+        </Button>
+      </Link>
     </main>
   );
 }

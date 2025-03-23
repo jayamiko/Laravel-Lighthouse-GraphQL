@@ -1,3 +1,4 @@
+import { PostRequest } from "@/types/PostType";
 import { fetchGraphQL } from "../graphql";
 
 export const query = `
@@ -15,11 +16,16 @@ export const query = `
 `;
 
 export async function getPost() {
-  const res = await fetchGraphQL({
-    query: query,
-    variables: {},
-  });
-  return res;
+  try {
+    const res = await fetchGraphQL({
+      query: query,
+      variables: {},
+    });
+    return res;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 interface PostByIdProps {
@@ -48,4 +54,26 @@ export async function getPostById({ id }: PostByIdProps) {
     },
   });
   return res;
+}
+
+const createPostQuery = `
+    mutation ($title: String!, $content: String!) {
+        createPost(title: $title, content: $content)
+    }
+`;
+
+export async function createPost(req: PostRequest) {
+  try {
+    const res = await fetchGraphQL({
+      query: createPostQuery,
+      variables: {
+        title: req.title,
+        content: req.content,
+      },
+    });
+
+    return { success: true, message: res?.data?.posts };
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
 }

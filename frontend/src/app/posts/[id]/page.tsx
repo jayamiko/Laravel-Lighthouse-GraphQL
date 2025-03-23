@@ -8,7 +8,7 @@ type Props = {
 export default async function Page({ params }: Props) {
   const response = await getPostById({ id: params.id });
 
-  const data = response?.post;
+  const data = response?.data?.post;
 
   return <PostDetailPage data={data} />;
 }

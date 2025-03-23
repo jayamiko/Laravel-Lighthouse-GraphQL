@@ -9,8 +9,8 @@ type Post {
     title: String!
     content: String!
     user: User! @belongsTo
-    created_at: DateTime
-    updated_at: DateTime
+    created_at: String!
+    updated_at: String!
 }
 
 type AuthPayload {

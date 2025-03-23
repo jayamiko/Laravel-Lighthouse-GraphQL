@@ -16,8 +16,7 @@ export async function fetchGraphQL({ query, variables }: GraphqlProps) {
 
   const csrfToken = Cookies.get("XSRF-TOKEN");
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token = "26|boJev5T1DBRO0wOBSP4enkFcKjwsvpbx4hltjiDT682717e2";
 
   try {
     const url = `${env.NEXT_PUBLIC_API_URL}/graphql`;
@@ -41,19 +40,12 @@ export async function fetchGraphQL({ query, variables }: GraphqlProps) {
     const json = await res.json();
     if (json?.errors && json.errors.length > 0) {
       const errorMessage = json.errors[0].message;
-
-      if (typeof window !== "undefined") {
-        alert(errorMessage);
-
-        if (errorMessage === "Unauthenticated.") {
-          window.location.replace("/login");
-        }
-      }
+      return { success: false, data: null, message: errorMessage };
     }
 
-    return json.data;
+    return { success: true, data: json.data, message: null };
   } catch (error) {
     console.error(error);
-    throw error;
+    return { success: false, data: null, message: error };
   }
 }
