@@ -24,6 +24,7 @@ type Query {
 }
 
 type Mutation {
+    logout: String! @field(resolver: "App\\GraphQL\\Mutations\\Logout")
     register(name: String!, email: String!, password: String!): String!
         @field(resolver: "App\\GraphQL\\Mutations\\Register")
     login(email: String!, password: String!): AuthPayload!
