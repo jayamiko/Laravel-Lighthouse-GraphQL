@@ -5,23 +5,36 @@ import { PostData, PostRequest } from "@/types/PostType";
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/buttons/Button";
 import PostForm from "@/components/forms/PostForm";
-import { deletePost, updatePost } from "@/libs/api/PostCollections";
+import {
+  deletePost,
+  getPostById,
+  updatePost,
+} from "@/libs/api/PostCollections";
 import AlertNotification from "@/components/labels/AlertNotification";
 import { useRouter } from "next/navigation";
 import { getAuthToken } from "@/libs/api/authCollection";
 import { User } from "@/types/UserType";
 
 interface PostDetailProps {
-  data: PostData;
+  id: string;
 }
 
-export default function PostDetailPage({ data }: PostDetailProps) {
+export default function PostDetailPage({ id }: PostDetailProps) {
   const router = useRouter();
+
+  const [data, setData] = useState<PostData | null>(null);
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const postID: string = data?.id;
+  useEffect(() => {
+    async function fetchPostByID(id: string) {
+      const response = await getPostById({ id: id });
+      setData(response?.data?.post);
+    }
+
+    fetchPostByID(id);
+  }, [id]);
 
   const [authUser, setAuthUser] = useState<User | null>(null);
 
@@ -39,7 +52,7 @@ export default function PostDetailPage({ data }: PostDetailProps) {
     authentication();
   }, []);
 
-  const userHasThisPost = authUser?.id === data.user.id;
+  const userHasThisPost = authUser?.id === data?.user.id;
 
   const initialForm: PostRequest = {
     title: "",
@@ -61,7 +74,7 @@ export default function PostDetailPage({ data }: PostDetailProps) {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const response = await updatePost(postID, form);
+    const response = await updatePost(id, form);
 
     if (response.success) {
       setMessage({ type: "success", text: response.message });
@@ -87,7 +100,7 @@ export default function PostDetailPage({ data }: PostDetailProps) {
   const handleDelete = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const response = await deletePost(postID);
+    const response = await deletePost(id);
 
     if (response.success) {
       setShowDeleteModal(false);
@@ -144,7 +157,7 @@ export default function PostDetailPage({ data }: PostDetailProps) {
         </div>
 
         <div className="flex items-center space-x-4 text-sm text-gray-500">
-          <span>Post ID: {postID}</span>
+          <span>Post ID: {id}</span>
           <span>•</span>
           <span>Author: {data?.user?.name}</span>
         </div>

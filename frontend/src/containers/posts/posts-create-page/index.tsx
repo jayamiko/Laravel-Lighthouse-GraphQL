@@ -6,10 +6,12 @@ import { createPost } from "@/libs/api/PostCollections";
 import { PostRequest } from "@/types/PostType";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/buttons/Button";
 import AlertNotification from "@/components/labels/AlertNotification";
+import { getAuthToken } from "@/libs/api/authCollection";
+import { User } from "@/types/UserType";
 
 export default function PostsCreatePage() {
   const router = useRouter();
@@ -18,6 +20,18 @@ export default function PostsCreatePage() {
     title: "",
     content: "",
   };
+
+  useEffect(() => {
+    const authentication = async () => {
+      const res = await getAuthToken();
+
+      if (!res.success) {
+        router.push("/login");
+      }
+    };
+
+    authentication();
+  }, []);
 
   const [form, setForm] = useState<PostRequest>(initialForm);
   const [message, setMessage] = useState<{

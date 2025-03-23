@@ -49,12 +49,38 @@ export async function login(req: LoginRequest) {
     const token = res?.data?.login?.token;
 
     if (token) {
-      const expiry = new Date().getTime() + 2 * 60 * 60 * 1000; // 2 hours
-      localStorage.setItem("token", token);
-      localStorage.setItem("token_expiry", expiry.toString());
-      window.location.href = "/posts";
-      return { success: true, message: "Login succesfully" };
+      return {
+        success: true,
+        data: {
+          token,
+        },
+        message: "Login succesfully",
+      };
     }
+  } catch (err: any) {
+    return { success: false, message: err.message };
+  }
+}
+
+const logoutQuery = `
+    mutation {
+      logout
+    }
+`;
+
+export async function logout() {
+  try {
+    const res = await fetchGraphQL({
+      query: logoutQuery,
+      variables: {},
+    });
+
+    if (!res.success) {
+      return { success: false, message: res.message };
+    }
+
+    localStorage.removeItem("token");
+    return { success: true, message: res.data.logout };
   } catch (err: any) {
     return { success: false, message: err.message };
   }

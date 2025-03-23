@@ -3,6 +3,7 @@
 import LoginForm from "@/components/forms/LoginForm";
 import { getAuthToken, login } from "@/libs/api/authCollection";
 import { LoginRequest } from "@/types/AuthType";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -27,13 +28,19 @@ function LoginPage() {
     authentication();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const res = await login(form);
 
     if (!res?.success) {
       alert(res?.message);
     } else {
+      const token = res?.data?.token;
+
+      const expiry = new Date().getTime() + 2 * 60 * 60 * 1000; // 2 hours
+      localStorage.setItem("token", token);
+      localStorage.setItem("token_expiry", expiry.toString());
+
       router.push("/posts");
     }
   };
@@ -48,17 +55,13 @@ function LoginPage() {
           Please login to your account
         </p>
 
-        <LoginForm
-          form={form}
-          onChange={handleChange}
-          onSubmit={handleSubmit}
-        />
+        <LoginForm form={form} onChange={handleChange} onSubmit={handleLogin} />
 
         <p className="text-center text-gray-500 text-sm">
           Don&apos;t have an account?{" "}
-          <a href="#" className="text-blue-500 hover:underline">
+          <Link href="/register" className="text-blue-500 hover:underline">
             Sign Up
-          </a>
+          </Link>
         </p>
       </div>
     </main>

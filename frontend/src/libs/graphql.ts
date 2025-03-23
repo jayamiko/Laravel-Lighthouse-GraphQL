@@ -4,7 +4,6 @@ import Cookies from "js-cookie";
 interface GraphqlProps {
   query: string;
   variables?: any;
-  token?: string;
 }
 
 export async function fetchGraphQL({ query, variables }: GraphqlProps) {
@@ -14,9 +13,10 @@ export async function fetchGraphQL({ query, variables }: GraphqlProps) {
     credentials: "include",
   });
 
-  const csrfToken = Cookies.get("XSRF-TOKEN");
+  const token =
+    typeof window !== "undefined" && window.localStorage.getItem("token");
 
-  const token = "26|boJev5T1DBRO0wOBSP4enkFcKjwsvpbx4hltjiDT682717e2";
+  const csrfToken = Cookies.get("XSRF-TOKEN");
 
   try {
     const url = `${env.NEXT_PUBLIC_API_URL}/graphql`;
@@ -29,6 +29,7 @@ export async function fetchGraphQL({ query, variables }: GraphqlProps) {
         ...(token && {
           Authorization: `Bearer ${token}`,
         }),
+        // Authorization: `Bearer 40|TYCjrHTzleHiCsI7QJMZD6k9K03avNe7Gi7JjGKgeef3ce96`,
       },
       credentials: "include",
       body: JSON.stringify({

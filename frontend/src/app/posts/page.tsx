@@ -11,8 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const response = await getPost();
-  const data = response?.data?.posts;
-
-  return <PostsPage data={data} />;
+  return <PostsPage />;
 }

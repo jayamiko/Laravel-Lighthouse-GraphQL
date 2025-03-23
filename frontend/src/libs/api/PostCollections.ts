@@ -72,7 +72,7 @@ export async function createPost(req: PostRequest) {
       },
     });
 
-    return { success: true, message: res?.data?.posts };
+    return { success: true, message: res?.data?.createPost };
   } catch (err: any) {
     return { success: false, message: err.message };
   }
