@@ -1,88 +1,98 @@
 "use client";
-import React, { ChangeEvent, useState } from "react";
 
-// interface NewsPageProps {
-//   data: {
-//     posts: PostEntity[];
-//   };
-// }
+import { PostData } from "@/types/PostType";
+import React, { useState, useMemo } from "react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { Input } from "@/components/inputs/Input";
+import { Button } from "@/components/buttons/Button";
 
-const LIMIT_PAGE = 12;
+interface PostsPageProps {
+  data: PostData[];
+}
 
-function PostsPage({ data }: any) {
-  const posts = data?.posts;
-
-  const [newsData, setNewsData] = useState(posts);
+export default function PostsPage({ data }: PostsPageProps) {
+  const LIMIT_PAGE = 6;
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  //   const { isLoading } = useQuery({
-  //     query: GET_POST_QUERY,
-  //     variables: {
-  //       filters: {
-  //         or: [
-  //           {
-  //             title: {
-  //               containsi: search,
-  //             },
-  //           },
-  //           {
-  //             article: {
-  //               containsi: search,
-  //             },
-  //           },
-  //         ],
-  //         and: [
-  //           {
-  //             category: {
-  //               containsi: filter,
-  //             },
-  //           },
-  //           {
-  //             category: {
-  //               containsi: activeTab,
-  //             },
-  //           },
-  //           AND_PUBLISH_FILTER,
-  //         ],
-  //       },
-  //       sort: "createdAt:desc",
-  //       pagination: {
-  //         pageSize: 25,
-  //       },
-  //     },
-  //     onComplete: (data: PostEntityResponseCollection) => {
-  //       setNewsData(data?.posts.data);
-  //     },
-  //   });
+  const filteredPosts = useMemo(() => {
+    return data.filter((post) =>
+      post.title.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search, data]);
 
-  //   const { data: headlineData }: any = useQuery({
-  //     query: GET_POST_QUERY,
-  //     variables: {
-  //       filters: {
-  //         headline: {
-  //           eq: true,
-  //         },
-  //         and: [AND_PUBLISH_FILTER],
-  //       },
-  //       sort: "createdAt:desc",
-  //       pagination: {
-  //         pageSize: 3,
-  //       },
-  //     },
-  //   });
+  const paginatedPosts = useMemo(() => {
+    const start = (page - 1) * LIMIT_PAGE;
+    return filteredPosts.slice(start, start + LIMIT_PAGE);
+  }, [page, filteredPosts]);
 
-  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    setTimeout(() => {
-      setSearch(event.target.value as string);
-    }, 1000);
-  };
+  const totalPages = Math.ceil(filteredPosts.length / LIMIT_PAGE);
 
-  const handlePagination = () => {
-    setPage((prev: number) => prev + 1);
-  };
+  return (
+    <main className="container mx-auto p-4 select-none">
+      <h1 className="text-black text-3xl font-bold mb-6 text-center">
+        Welcome to Blog Website
+      </h1>
 
-  return <main className="container mx-auto select-none">This Posts Page</main>;
+      {/* Search Bar */}
+      <div className="flex items-center gap-2 mb-6 justify-center">
+        <Input
+          placeholder="Search posts..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+          className="w-1/3"
+        />
+        <Button variant="outline">
+          <Search className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Posts Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {paginatedPosts.length > 0 ? (
+          paginatedPosts.map((post) => (
+            <div
+              key={post.id}
+              className="text-gray-600 border rounded-xl p-4 shadow-sm hover:shadow-md transition-all"
+            >
+              <h2 className="text-xl font-semibold mb-2 truncate">
+                {post.title}
+              </h2>
+              <p className="text-sm line-clamp-3">{post.content}</p>
+            </div>
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-500">
+            No posts found.
+          </p>
+        )}
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4 mt-8">
+          <Button
+            variant="outline"
+            disabled={page === 1}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <span>
+            Page {page} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            disabled={page === totalPages}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+    </main>
+  );
 }
-
-export default PostsPage;

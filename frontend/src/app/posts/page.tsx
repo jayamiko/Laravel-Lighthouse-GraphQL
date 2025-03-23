@@ -1,4 +1,6 @@
+import React from "react";
 import PostsPage from "@/containers/posts/posts-page";
+import { getPost } from "@/libs/api/PostCollections";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,20 +11,11 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  //   const postData = await getPost({
-  //     variables: {
-  //       filters: {
-  //         category: {
-  //           containsi: "blog",
-  //         },
-  //         and: [AND_PUBLISH_FILTER],
-  //       },
-  //       sort: "createdAt:desc",
-  //     },
-  //   });
+  const response = await getPost({
+    variables: {},
+  });
 
-  //   const data = {
-  //     posts: postData?.posts?.data,
-  //   };
-  return <PostsPage data={[]} />;
+  const data = response?.posts;
+
+  return <PostsPage data={data} />;
 }
