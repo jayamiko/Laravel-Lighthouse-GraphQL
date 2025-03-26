@@ -42,7 +42,13 @@ export default function PostsPage() {
   useEffect(() => {
     async function fetchPost() {
       const response = await getPost();
-      setData(response?.data?.posts);
+      if (response?.data?.posts) {
+        const sortedPosts = response.data.posts.sort(
+          (a: PostData, b: PostData) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setData(sortedPosts);
+      }
     }
 
     fetchPost();
