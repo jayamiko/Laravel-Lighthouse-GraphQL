@@ -14,6 +14,7 @@ import AlertNotification from "@/components/labels/AlertNotification";
 import { useRouter } from "next/navigation";
 import { getAuthToken } from "@/libs/api/authCollection";
 import { User } from "@/types/UserType";
+import Modal from "@/components/modals/Modal";
 
 interface PostDetailProps {
   id: string;
@@ -169,41 +170,29 @@ export default function PostDetailPage({ id }: PostDetailProps) {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-lg space-y-4">
-            <h2 className="text-gray-700 text-xl font-semibold">Edit Post</h2>
-
-            <PostForm
-              type="edit"
-              form={form}
-              onChange={handleChange}
-              onSubmit={handleUpdate}
-              handleCancel={() => setShowEditModal(false)}
-            />
-          </div>
-        </div>
+        <Modal title={`Edit Post ID ${id}`}>
+          <PostForm
+            type="edit"
+            form={form}
+            onChange={handleChange}
+            onSubmit={handleUpdate}
+            handleCancel={() => setShowEditModal(false)}
+          />
+        </Modal>
       )}
 
       {/* Delete Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm space-y-4">
-            <h2 className="text-gray-700 font-medium text-center">
-              Are you sure you want to delete this post?
-            </h2>
-            <div className="flex justify-center gap-4">
-              <Button
-                variant="outline"
-                onClick={() => setShowDeleteModal(false)}
-              >
-                Cancel
-              </Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                Yes, Delete
-              </Button>
-            </div>
+        <Modal title=" Are you sure you want to delete this post?">
+          <div className="flex justify-center gap-4">
+            <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              Yes, Delete
+            </Button>
           </div>
-        </div>
+        </Modal>
       )}
     </main>
   );

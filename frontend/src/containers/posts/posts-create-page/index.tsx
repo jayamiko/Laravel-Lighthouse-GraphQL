@@ -11,7 +11,6 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/buttons/Button";
 import AlertNotification from "@/components/labels/AlertNotification";
 import { getAuthToken } from "@/libs/api/authCollection";
-import { User } from "@/types/UserType";
 
 export default function PostsCreatePage() {
   const router = useRouter();

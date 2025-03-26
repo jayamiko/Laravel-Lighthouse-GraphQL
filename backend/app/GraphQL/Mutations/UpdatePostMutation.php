@@ -30,6 +30,7 @@ class UpdatePostMutation
         }
 
         $post->save();
+        
         return "Update post succesfully";
     }
 }

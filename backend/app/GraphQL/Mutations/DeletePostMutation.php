@@ -21,6 +21,7 @@ class DeletePostMutation
             throw new \Exception('Access denied: You are not allowed to delete this post');
         }
 
+
         $post->delete();
 
         return "Post deleted successfully";
