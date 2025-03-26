@@ -1,5 +1,4 @@
 import PostDetailPage from "@/containers/posts/posts-detail-page";
-import { getPostById } from "@/libs/api/PostCollections";
 
 type Props = {
   params: { id: string };

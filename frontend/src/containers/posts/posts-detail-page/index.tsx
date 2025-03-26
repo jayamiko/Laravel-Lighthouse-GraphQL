@@ -28,12 +28,12 @@ export default function PostDetailPage({ id }: PostDetailProps) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  useEffect(() => {
-    async function fetchPostByID(id: string) {
-      const response = await getPostById({ id: id });
-      setData(response?.data?.post);
-    }
+  async function fetchPostByID(id: string) {
+    const response = await getPostById({ id: id });
+    setData(response?.data?.post);
+  }
 
+  useEffect(() => {
     fetchPostByID(id);
   }, [id]);
 
@@ -81,6 +81,8 @@ export default function PostDetailPage({ id }: PostDetailProps) {
       setMessage({ type: "success", text: response.message });
       setForm(initialForm);
       setShowEditModal(false);
+
+      fetchPostByID(id);
 
       setTimeout(() => {
         setMessage(null);
